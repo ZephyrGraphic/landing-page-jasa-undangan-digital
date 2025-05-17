@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence, useInView } from "framer-motion"
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -46,20 +46,22 @@ export function TestimonialCarousel() {
   const [current, setCurrent] = useState(0)
   const [autoplay, setAutoplay] = useState(true)
   const [mounted, setMounted] = useState(false)
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: false, amount: 0.1, threshold: 0.1 })
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
   useEffect(() => {
-    if (!autoplay) return
+    if (!autoplay || !isInView) return
 
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % testimonials.length)
     }, 5000)
 
     return () => clearInterval(interval)
-  }, [autoplay])
+  }, [autoplay, isInView])
 
   const next = () => {
     setAutoplay(false)
@@ -74,77 +76,117 @@ export function TestimonialCarousel() {
   if (!mounted) return null
 
   return (
-    <div className="relative max-w-4xl mx-auto">
+    <motion.div
+      className="relative max-w-4xl mx-auto"
+      ref={ref}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.1 }}
+      transition={{ duration: 0.8 }}
+    >
       <AnimatePresence mode="wait">
         <motion.div
           key={current}
           initial={{ opacity: 0, x: 100 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -100 }}
-          transition={{ duration: 0.5 }}
+          transition={{
+            type: "spring",
+            stiffness: 300,
+            damping: 30,
+            duration: 0.5,
+          }}
           className="relative"
         >
-          <Card className="border border-[#F8C3B9]/20 shadow-lg bg-white/80 backdrop-blur-sm">
+          <Card className="border border-indigo-500/20 bg-slate-900/60 backdrop-blur-sm shadow-lg">
             <CardContent className="p-8 md:p-12">
-              <Quote className="h-12 w-12 text-[#D4AF37]/30 mb-6" />
-              <p className="text-lg md:text-xl text-gray-700 italic mb-8">"{testimonials[current].quote}"</p>
-              <div className="flex items-center gap-4">
-                <div className="relative h-16 w-16 overflow-hidden rounded-full border-2 border-[#F8C3B9]/30">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+              >
+                <Quote className="h-12 w-12 text-indigo-500/40 mb-6" />
+              </motion.div>
+              <motion.p
+                className="text-lg md:text-xl text-slate-200 italic mb-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+              >
+                "{testimonials[current].quote}"
+              </motion.p>
+              <motion.div
+                className="flex items-center gap-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+              >
+                <motion.div
+                  className="relative h-16 w-16 overflow-hidden rounded-full border-2 border-indigo-500/30"
+                  whileHover={{ scale: 1.1, rotate: 10 }}
+                >
                   <Image
                     src={testimonials[current].image || "/placeholder.svg"}
                     alt={testimonials[current].name}
                     fill
                     className="object-cover"
                   />
-                </div>
+                </motion.div>
                 <div>
-                  <h4 className="font-serif text-lg font-semibold text-gray-800">{testimonials[current].name}</h4>
-                  <p className="text-sm text-gray-500">{testimonials[current].date}</p>
+                  <h4 className="font-serif text-lg font-semibold text-white">{testimonials[current].name}</h4>
+                  <p className="text-sm text-slate-400">{testimonials[current].date}</p>
                 </div>
-              </div>
+              </motion.div>
             </CardContent>
           </Card>
         </motion.div>
       </AnimatePresence>
 
       <div className="flex justify-center mt-8 gap-2">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={prev}
-          className="rounded-full border-[#D4AF37]/30 text-[#D4AF37] hover:bg-[#D4AF37]/5 hover:text-[#C9A633] hover:border-[#D4AF37]"
-        >
-          <ChevronLeft className="h-5 w-5" />
-          <span className="sr-only">Previous</span>
-        </Button>
-        {testimonials.map((_, index) => (
+        <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
           <Button
-            key={index}
             variant="outline"
             size="icon"
-            onClick={() => {
-              setAutoplay(false)
-              setCurrent(index)
-            }}
-            className={`w-3 h-3 p-0 rounded-full ${
-              current === index
-                ? "bg-[#D4AF37] border-[#D4AF37]"
-                : "bg-transparent border-[#D4AF37]/30 hover:border-[#D4AF37]"
-            }`}
+            onClick={prev}
+            className="rounded-full border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/10 hover:text-indigo-200 hover:border-indigo-400"
           >
-            <span className="sr-only">Go to slide {index + 1}</span>
+            <ChevronLeft className="h-5 w-5" />
+            <span className="sr-only">Previous</span>
           </Button>
+        </motion.div>
+
+        {testimonials.map((_, index) => (
+          <motion.div key={index} whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.9 }}>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => {
+                setAutoplay(false)
+                setCurrent(index)
+              }}
+              className={`w-3 h-3 p-0 rounded-full ${
+                current === index
+                  ? "bg-indigo-500 border-indigo-500"
+                  : "bg-transparent border-indigo-500/30 hover:border-indigo-400"
+              }`}
+            >
+              <span className="sr-only">Go to slide {index + 1}</span>
+            </Button>
+          </motion.div>
         ))}
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={next}
-          className="rounded-full border-[#D4AF37]/30 text-[#D4AF37] hover:bg-[#D4AF37]/5 hover:text-[#C9A633] hover:border-[#D4AF37]"
-        >
-          <ChevronRight className="h-5 w-5" />
-          <span className="sr-only">Next</span>
-        </Button>
+
+        <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={next}
+            className="rounded-full border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/10 hover:text-indigo-200 hover:border-indigo-400"
+          >
+            <ChevronRight className="h-5 w-5" />
+            <span className="sr-only">Next</span>
+          </Button>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   )
 }
