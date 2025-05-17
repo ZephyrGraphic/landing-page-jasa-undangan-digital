@@ -4,7 +4,10 @@ import { useEffect, useState, useRef } from "react"
 import Link from "next/link"
 import { motion, useScroll, useTransform } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { Sparkles, ChevronDown } from "lucide-react"
+import { Sparkles, ChevronDown, ChevronRight } from "lucide-react"
+
+// Import utility function
+import { scrollToSection } from "@/utils/scroll-utils"
 
 export function HeroSection() {
   const [mounted, setMounted] = useState(false)
@@ -107,12 +110,18 @@ export function HeroSection() {
             transition={{ duration: 0.8, delay: 0.8 }}
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
-            <Link href="#gallery">
+            <Link
+              href="#gallery"
+              onClick={(e) => {
+                e.preventDefault()
+                scrollToSection("gallery")
+              }}
+            >
               <Button
                 size="lg"
                 className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-full px-8 py-6 text-lg font-medium shadow-lg hover:shadow-indigo-500/20 transition-all duration-300 group relative overflow-hidden w-full sm:w-auto"
               >
-                <span className="relative z-10">Lihat Koleksi Undangan</span>
+                <span className="relative z-10 flex items-center">Lihat Koleksi Undangan</span>
                 <motion.span className="absolute inset-0 bg-gradient-to-r from-purple-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></motion.span>
                 <motion.div
                   className="absolute right-4 z-10"
@@ -124,13 +133,22 @@ export function HeroSection() {
               </Button>
             </Link>
 
-            <Link href="#features">
+            <Link
+              href="#features"
+              onClick={(e) => {
+                e.preventDefault()
+                scrollToSection("features")
+              }}
+            >
               <Button
                 size="lg"
                 variant="outline"
-                className="border-indigo-400/30 text-indigo-200 hover:bg-indigo-500/10 hover:text-indigo-100 rounded-full px-8 py-6 text-lg font-medium transition-all duration-300 w-full sm:w-auto"
+                className="border-indigo-400/30 text-indigo-200 hover:bg-indigo-500/10 hover:text-indigo-100 rounded-full px-8 py-6 text-lg font-medium transition-all duration-300 w-full sm:w-auto group"
               >
-                <span>Keunggulan Kami</span>
+                <span className="flex items-center">
+                  Keunggulan Kami
+                  <ChevronRight className="ml-1 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </span>
               </Button>
             </Link>
           </motion.div>
@@ -146,9 +164,7 @@ export function HeroSection() {
       >
         <motion.div
           className="flex flex-col items-center cursor-pointer"
-          onClick={() => {
-            document.getElementById("gallery")?.scrollIntoView({ behavior: "smooth" })
-          }}
+          onClick={() => scrollToSection("gallery")}
           whileHover={{ scale: 1.1 }}
         >
           <span className="text-indigo-200 text-sm mb-2">Scroll</span>

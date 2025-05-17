@@ -1,8 +1,12 @@
 "use client"
 
 import Link from "next/link"
-import { Heart, Instagram, MessageSquare, Music } from "lucide-react"
+import Image from "next/image"
+import { Instagram, MessageSquare, Music } from "lucide-react"
 import { motion } from "framer-motion"
+
+// Import utility function
+import { scrollToSection } from "@/utils/scroll-utils"
 
 export function Footer() {
   return (
@@ -18,12 +22,16 @@ export function Footer() {
           >
             <Link href="/" className="flex items-center">
               <motion.div
-                whileHover={{ scale: 1.1, rotate: 10 }}
+                whileHover={{ scale: 1.1, rotate: 5 }}
                 transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                className="relative w-10 h-10 mr-2"
               >
-                <Heart className="h-6 w-6 text-indigo-500" />
+                <Image src="/icon.undangan.png" alt="ZepWed Logo" fill className="object-contain" />
               </motion.div>
-              <span className="ml-2 font-serif text-xl font-bold text-white">ZepWed</span>
+              <div>
+                <span className="ml-1 font-serif text-xl font-bold text-white">ZepWed</span>
+                <span className="block text-xs text-indigo-300 -mt-1">Digital Invitation</span>
+              </div>
             </Link>
             <p className="mt-2 text-sm text-slate-400">Undangan Pernikahan Digital Premium</p>
           </motion.div>
@@ -38,6 +46,10 @@ export function Footer() {
             <Link
               href="#hero"
               className="text-sm text-slate-300 hover:text-indigo-300 transition-colors relative group"
+              onClick={(e) => {
+                e.preventDefault()
+                scrollToSection("hero")
+              }}
             >
               Beranda
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-indigo-500 group-hover:w-full transition-all duration-300"></span>
@@ -45,6 +57,10 @@ export function Footer() {
             <Link
               href="#gallery"
               className="text-sm text-slate-300 hover:text-indigo-300 transition-colors relative group"
+              onClick={(e) => {
+                e.preventDefault()
+                scrollToSection("gallery")
+              }}
             >
               Koleksi Tema
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-indigo-500 group-hover:w-full transition-all duration-300"></span>
@@ -52,6 +68,10 @@ export function Footer() {
             <Link
               href="#features"
               className="text-sm text-slate-300 hover:text-indigo-300 transition-colors relative group"
+              onClick={(e) => {
+                e.preventDefault()
+                scrollToSection("features")
+              }}
             >
               Keunggulan
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-indigo-500 group-hover:w-full transition-all duration-300"></span>
@@ -59,6 +79,10 @@ export function Footer() {
             <Link
               href="#testimonials"
               className="text-sm text-slate-300 hover:text-indigo-300 transition-colors relative group"
+              onClick={(e) => {
+                e.preventDefault()
+                scrollToSection("testimonials")
+              }}
             >
               Testimoni
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-indigo-500 group-hover:w-full transition-all duration-300"></span>
@@ -66,6 +90,10 @@ export function Footer() {
             <Link
               href="#contact"
               className="text-sm text-slate-300 hover:text-indigo-300 transition-colors relative group"
+              onClick={(e) => {
+                e.preventDefault()
+                scrollToSection("contact")
+              }}
             >
               Kontak
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-indigo-500 group-hover:w-full transition-all duration-300"></span>
